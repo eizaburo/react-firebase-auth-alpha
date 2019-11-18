@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import firebase from './Firebase';
+import LoadingOverlay from 'react-loading-overlay';
 
 class Auth extends React.Component {
 
@@ -24,8 +25,16 @@ class Auth extends React.Component {
     render() {
 
         //ログイン状態チェックが完了するまで待つ
-        if(!this.state.signInCheck){
-            return <p>ログインチェック中...</p>
+        if (!this.state.signInCheck) {
+            return (
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='Loading...'
+                >
+                    <div style={{ height: '100vh', width: '100vw' }}></div>
+                </ LoadingOverlay>
+            );
         }
 
         //ログイン状態により振り分け
