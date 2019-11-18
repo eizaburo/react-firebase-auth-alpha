@@ -10,22 +10,20 @@ import SignInOrUp from './screens/SignInOrUp';
 import SignUp from './screens/SignUp';
 
 import Auth from './Auth';
+import { thisExpression } from '@babel/types';
 
 class App extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            signedIn: false,
-        }
+    state = {
+        signedIn: false,
     }
 
     componentDidMount = () => {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                this.setState({ signedIn: 'true' });
+                this.setState({ signedIn: true });
             } else {
-                console.log("signedOut")
+                this.setState({ signedIn: false });
             }
         })
     }
@@ -36,11 +34,11 @@ class App extends React.Component {
                 <Switch>
                     <Route exact path="/signin" component={SignInOrUp} />
                     <Route exact path="/signup" component={SignUp} />
-                    <Auth user={this.state.signedIn}>
+                    <Auth>
                         <Switch>
                             <Route exact path="/" component={Home} />
                             <Route exact path="/profile" component={Profile} />
-                            <Route render={() => (<p>404 not found.</p>)} />
+                            <Route render={() => <p>not found.</p>} />
                         </Switch>
                     </Auth>
                 </Switch>

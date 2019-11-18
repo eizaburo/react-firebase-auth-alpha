@@ -1,20 +1,32 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import firebase from '../Firebase';
 
 class SignInOrUp extends React.Component {
 
+    state = {
+        user: null,
+    }
+
     handleOnSubmit = (values) => {
         firebase.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                console.log(res.user.uid);
+                this.props.history.push("/");
             })
             .catch(error => {
                 alert(error);
             });
+    }
+
+    componentDidMount = () => {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.setState({ uid: user.uid });
+            }
+        })
     }
 
     render() {
@@ -72,11 +84,12 @@ class SignInOrUp extends React.Component {
                 <div className="mx-auto" style={{ width: 400, background: '#fff', padding: 20 }}>
                     <Link to="/signup">新規登録はこちら。</Link>
                 </div>
-                <div>{firebase.auth().currentUser}</div>
-
+                <div>
+                    {this.state.uid}
+                </div>
             </div>
         );
     }
 }
 
-export default SignInOrUp;
+export default withRouter(SignInOrUp);

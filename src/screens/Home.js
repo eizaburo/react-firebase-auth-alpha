@@ -5,7 +5,6 @@ class Home extends React.Component {
 
     handleLogout = () => {
         firebase.auth().signOut();
-        // this.props.history.push("/");
     }
 
     render() {
