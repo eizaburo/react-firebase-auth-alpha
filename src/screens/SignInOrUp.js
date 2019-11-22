@@ -9,6 +9,7 @@ class SignInOrUp extends React.Component {
 
     state = {
         user: null,
+        loading: false,
     }
 
     _isMounted = false;
