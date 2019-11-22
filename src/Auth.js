@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import firebase from './Firebase';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -40,7 +40,15 @@ class Auth extends React.Component {
     render() {
 
         if (!this.state.signinCheck) {
-            return <p>loading...</p>
+            return (
+                <LoadingOverlay
+                    active={true}
+                    spinner
+                    text='Loading...'
+                >
+                    <div style={{ height: '100vh', width: '100vw' }}></div>
+                </ LoadingOverlay>
+            );
         }
 
         if (this.state.signedIn) {

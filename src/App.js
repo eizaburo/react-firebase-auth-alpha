@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import firebase from './Firebase';
 
 //screens
@@ -10,7 +10,6 @@ import SignInOrUp from './screens/SignInOrUp';
 import SignUp from './screens/SignUp';
 
 import Auth from './Auth';
-import { thisExpression } from '@babel/types';
 
 class App extends React.Component {
 
