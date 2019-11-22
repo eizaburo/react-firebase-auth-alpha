@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+// import { Form } from 'react-bootstrap';
+import { Button, Form, FormGroup, Label, Input, FormFeedback, Spinner } from 'reactstrap';
 import { Link, withRouter } from 'react-router-dom'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -7,14 +8,31 @@ import firebase from '../Firebase';
 
 class SignUp extends React.Component {
 
+    state = {
+        loading: false,
+    }
+
+    _isMounted = false;
+
     handleOnSubmit = (values) => {
+        if (this._isMounted) this.setState({ loading: true });
         firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
             .then(res => {
+                if (this._isMounted) this.setState({ loading: false });
                 this.props.history.push("/");
             })
             .catch(error => {
+                if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });
+    }
+
+    componentDidMount = () => {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount = () => {
+        this._isMounted = false;
     }
 
     render() {
@@ -34,50 +52,56 @@ class SignUp extends React.Component {
                         {
                             ({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
                                 <Form onSubmit={handleSubmit}>
-                                    <Form.Group>
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
+                                    <FormGroup>
+                                        <Label for="name">Email</Label>
+                                        <Input
                                             type="email"
                                             name="email"
+                                            id="email"
                                             value={values.email}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            isInvalid={!!(touched.email && errors.email)}
+                                            invalid={touched.email && errors.email ? true : false}
                                         />
-                                        <Form.Control.Feedback type="invalid">
+                                        <FormFeedback>
                                             {errors.email}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Password</Form.Label>
-                                        <Form.Control
+                                        </FormFeedback>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="password">Password</Label>
+                                        <Input
                                             type="password"
                                             name="password"
+                                            id="password"
                                             value={values.password}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            isInvalid={!!(touched.password && errors.password)}
+                                            invalid={touched.password && errors.password ? true : false}
                                         />
-                                        <Form.Control.Feedback type="invalid">
+                                        <FormFeedback>
                                             {errors.password}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Tel</Form.Label>
-                                        <Form.Control
+                                        </FormFeedback>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="tel">Tel</Label>
+                                        <Input
                                             type="tel"
                                             name="tel"
+                                            id="tel"
                                             value={values.tel}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            isInvalid={!!(touched.tel && errors.tel)}
+                                            invalid={touched.tel && errors.tel ? true : false}
                                         />
-                                        <Form.Control.Feedback type="invalid">
+                                        <FormFeedback>
                                             {errors.tel}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                        </FormFeedback>
+                                    </FormGroup>
                                     <div style={{ textAlign: 'center' }}>
-                                        <button className="btn btn-success">新規登録</button>
+                                        <Button color="success" type="submit" disabled={this.state.loading}>
+                                            <Spinner size="sm" color="light" style={{ marginRight: 5 }} hidden={!this.state.loading} />
+                                            新規登録
+                                        </Button>
                                     </div>
                                 </Form>
                             )

@@ -1,5 +1,7 @@
 import React from 'react';
 import firebase from '../Firebase';
+import { Link } from 'react-router-dom';
+import { Button } from 'reactstrap';
 
 class Home extends React.Component {
 
@@ -9,9 +11,12 @@ class Home extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="container">
                 <p>Home</p>
-                <button onClick={this.handleLogout}>ログアウト</button>
+                <Link to="/profile">Profileへ</Link>
+                <br />
+                <br />
+                <Button onClick={this.handleLogout}>ログアウト</Button>
             </div>
         );
     }

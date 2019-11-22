@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { Button, Form, FormGroup, Label, Input, FormFeedback, Spinner } from 'reactstrap';
 import { Link, withRouter } from 'react-router-dom'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -8,20 +8,25 @@ import firebase from '../Firebase';
 class SignInOrUp extends React.Component {
 
     state = {
-        user: null,
         loading: false,
     }
 
     _isMounted = false;
 
     handleOnSubmit = (values) => {
+
+        if (this._isMounted) this.setState({ loading: true })
+
         firebase.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
                 this.props.history.push("/");
+                if (this._isMounted) this.setState({ loading: false });
             })
             .catch(error => {
+                if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });
+
     }
 
     componentDidMount = () => {
@@ -55,36 +60,41 @@ class SignInOrUp extends React.Component {
                         {
                             ({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
                                 <Form onSubmit={handleSubmit}>
-                                    <Form.Group>
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
+                                    <FormGroup>
+                                        <Label for="email">Email</Label>
+                                        <Input
                                             type="email"
                                             name="email"
+                                            id="email"
                                             value={values.email}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            isInvalid={!!(touched.email && errors.email)}
+                                            invalid={touched.email && errors.email ? true : false}
                                         />
-                                        <Form.Control.Feedback type="invalid">
+                                        <FormFeedback>
                                             {errors.email}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Password</Form.Label>
-                                        <Form.Control
+                                        </FormFeedback>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="password">Password</Label>
+                                        <Input
                                             type="password"
                                             name="password"
+                                            id="password"
                                             value={values.password}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            isInvalid={!!(touched.password && errors.password)}
+                                            invalid={touched.password && errors.password ? true : false}
                                         />
-                                        <Form.Control.Feedback type="invalid">
+                                        <FormFeedback>
                                             {errors.password}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                        </FormFeedback>
+                                    </FormGroup>
                                     <div style={{ textAlign: 'center' }}>
-                                        <button className="btn btn-primary" type="submit">ログイン</button>
+                                        <Button color="primary" type="submit" disabled={this.state.loading}>
+                                            <Spinner size="sm" color="light" style={{ marginRight: 5 }} hidden={!this.state.loading} />
+                                            ログイン
+                                        </Button>
                                     </div>
                                 </Form>
                             )
@@ -93,9 +103,6 @@ class SignInOrUp extends React.Component {
                 </div>
                 <div className="mx-auto" style={{ width: 400, background: '#fff', padding: 20 }}>
                     <Link to="/signup">新規登録はこちら。</Link>
-                </div>
-                <div>
-                    {this.state.uid}
                 </div>
             </div>
         );
