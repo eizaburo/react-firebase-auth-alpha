@@ -11,6 +11,8 @@ class SignInOrUp extends React.Component {
         user: null,
     }
 
+    _isMounted = false;
+
     handleOnSubmit = (values) => {
         firebase.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
@@ -22,11 +24,18 @@ class SignInOrUp extends React.Component {
     }
 
     componentDidMount = () => {
+        this._isMounted = true;
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                this.setState({ uid: user.uid });
+                if (this._isMounted) {
+                    this.setState({ uid: user.uid });
+                }
             }
         })
+    }
+
+    componentWillUnmount = () => {
+        this._isMounted = false;
     }
 
     render() {

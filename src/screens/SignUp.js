@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import firebase from '../Firebase';
@@ -10,7 +10,7 @@ class SignUp extends React.Component {
     handleOnSubmit = (values) => {
         firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                console.log(res.user.uid);
+                this.props.history.push("/");
             })
             .catch(error => {
                 alert(error);
@@ -93,4 +93,4 @@ class SignUp extends React.Component {
     }
 }
 
-export default SignUp;
+export default withRouter(SignUp);
