@@ -9,19 +9,26 @@ import firebase from '../Firebase';
 class SignUp extends React.Component {
 
     state = {
-        loading: false,
+        loading: false, //処理中にボタンにspinner表示する制御用
     }
 
     _isMounted = false;
 
+    //Submitされたら
     handleOnSubmit = (values) => {
+        //spinner表示開始
         if (this._isMounted) this.setState({ loading: true });
+        //新規登録処理
         firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
             .then(res => {
+                //正常終了時
+                //spinner表示終了
                 if (this._isMounted) this.setState({ loading: false });
-                this.props.history.push("/");
+                //Homeに移動
+                this.props.history.push("/"); //history.pushを使うためwithRouterしている
             })
             .catch(error => {
+                //異常終了時
                 if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });

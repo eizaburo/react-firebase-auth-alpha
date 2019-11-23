@@ -6,23 +6,36 @@ import LoadingOverlay from 'react-loading-overlay';
 class Auth extends React.Component {
 
     state = {
-        signinCheck: false,
-        signedIn: false,
+        signinCheck: false, //ログインチェックが完了してるか
+        signedIn: false, //ログインしてるか
     }
 
-    _isMounted = false;
+    _isMounted = false; //unmountを判断（エラー防止用）
 
     componentDidMount = () => {
+        //mountされてる
         this._isMounted = true;
+
+        //ログインしてるかどうかチェック
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
+                //してる
                 if (this._isMounted) {
                     this.setState({
                         signinCheck: true,
                         signedIn: true,
                     });
                 }
+                //Custom Claimの取得
+                user.getIdTokenResult(true).then(idTokenResult => {
+                    if (idTokenResult.claims.admin) {
+                        console.log("admin");
+                    }else{
+                        console.log("user");
+                    }
+                });
             } else {
+                //してない
                 if (this._isMounted) {
                     this.setState({
                         signinCheck: true,
@@ -38,7 +51,7 @@ class Auth extends React.Component {
     }
 
     render() {
-
+        //チェックが終わってないなら（ローディング表示）
         if (!this.state.signinCheck) {
             return (
                 <LoadingOverlay
@@ -51,9 +64,12 @@ class Auth extends React.Component {
             );
         }
 
+        //チェックが終わりかつ
         if (this.state.signedIn) {
+            //サインインしてるとき（そのまま表示）
             return this.props.children;
         } else {
+            //してないとき（ログイン画面にリダイレクト）
             return <Redirect to="/signin" />
         }
     }

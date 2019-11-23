@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 class Profile extends React.Component {
     render() {
         return (
-            <div>
+            <div className="container">
                 <p>Profile</p>
                 <br/>
                 <Link to="/">Homeへ</Link>

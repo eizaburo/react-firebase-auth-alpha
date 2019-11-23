@@ -12,27 +12,13 @@ import SignUp from './screens/SignUp';
 import Auth from './Auth';
 
 class App extends React.Component {
-
-    state = {
-        signedIn: false,
-    }
-
-    componentDidMount = () => {
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                this.setState({ signedIn: true });
-            } else {
-                this.setState({ signedIn: false });
-            }
-        })
-    }
-
     render() {
         return (
             <Router>
                 <Switch>
                     <Route exact path="/signin" component={SignInOrUp} />
                     <Route exact path="/signup" component={SignUp} />
+                    {/* 以下認証のみ */}
                     <Auth>
                         <Switch>
                             <Route exact path="/" component={Home} />

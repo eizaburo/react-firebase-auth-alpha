@@ -8,21 +8,23 @@ import firebase from '../Firebase';
 class SignInOrUp extends React.Component {
 
     state = {
-        loading: false,
+        loading: false, //spinner制御用
     }
 
     _isMounted = false;
 
     handleOnSubmit = (values) => {
-
+        //spinner表示開始
         if (this._isMounted) this.setState({ loading: true })
-
+        //サインイン（ログイン）処理
         firebase.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
+                //正常終了時
                 this.props.history.push("/");
                 if (this._isMounted) this.setState({ loading: false });
             })
             .catch(error => {
+                //異常終了時
                 if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });
@@ -31,13 +33,6 @@ class SignInOrUp extends React.Component {
 
     componentDidMount = () => {
         this._isMounted = true;
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                if (this._isMounted) {
-                    this.setState({ uid: user.uid });
-                }
-            }
-        })
     }
 
     componentWillUnmount = () => {
