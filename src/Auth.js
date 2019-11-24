@@ -75,7 +75,7 @@ class Auth extends React.Component {
         }
 
         //チェックが終わりかつ
-        if (this.state.signedIn) {
+        if (this.state.signedIn && this.props.user.email !== '') {
             //サインインしてるとき（そのまま表示）
             return this.props.children;
         } else {
