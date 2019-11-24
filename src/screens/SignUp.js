@@ -6,6 +6,10 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import firebase from '../Firebase';
 
+//redux
+import { connect } from 'react-redux';
+import { updateEmail, updatePassword, updateTel, signUp } from '../actions/userAction';
+
 class SignUp extends React.Component {
 
     state = {
@@ -15,23 +19,38 @@ class SignUp extends React.Component {
     _isMounted = false;
 
     //Submitされたら
-    handleOnSubmit = (values) => {
+    handleOnSubmit = async (values) => {
         //spinner表示開始
         if (this._isMounted) this.setState({ loading: true });
+
+        const { email, password, tel } = values;
+        this.props.updateEmail(email);
+        this.props.updatePassword(password);
+        this.props.updateTel(tel);
+
+        try {
+            await this.props.signUp();
+            if (this._isMounted) this.setState({ loading: false });
+            this.props.history.push("/");
+        } catch (e) {
+            if (this._isMounted) this.setState({ loading: false });
+            alert(e);
+        }
+
         //新規登録処理
-        firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
-            .then(res => {
-                //正常終了時
-                //spinner表示終了
-                if (this._isMounted) this.setState({ loading: false });
-                //Homeに移動
-                this.props.history.push("/"); //history.pushを使うためwithRouterしている
-            })
-            .catch(error => {
-                //異常終了時
-                if (this._isMounted) this.setState({ loading: false });
-                alert(error);
-            });
+        // firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
+        //     .then(res => {
+        //         //正常終了時
+        //         //spinner表示終了
+        //         if (this._isMounted) this.setState({ loading: false });
+        //         //Homeに移動
+        //         this.props.history.push("/"); //history.pushを使うためwithRouterしている
+        //     })
+        //     .catch(error => {
+        //         //異常終了時
+        //         if (this._isMounted) this.setState({ loading: false });
+        //         alert(error);
+        //     });
     }
 
     componentDidMount = () => {
@@ -43,6 +62,7 @@ class SignUp extends React.Component {
     }
 
     render() {
+        // console.log(this.props.user);
         return (
             <div className="container">
                 <div className="mx-auto" style={{ width: 400, background: '#eee', padding: 20, marginTop: 60 }}>
@@ -124,4 +144,20 @@ class SignUp extends React.Component {
     }
 }
 
-export default withRouter(SignUp);
+const mapStateToProps = state => (
+    {
+        user: state.user,
+    }
+);
+
+const mapDispatchToProps = dispatch => (
+    {
+        updateEmail: email => dispatch(updateEmail(email)),
+        updatePassword: password => dispatch(updatePassword(password)),
+        updateTel: tel => dispatch(updateTel(tel)),
+        signUp: () => dispatch(signUp()),
+    }
+);
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SignUp));

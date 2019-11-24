@@ -7,18 +7,18 @@ import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 
 class Home extends React.Component {
-
     handleLogout = () => {
         firebase.auth().signOut();
     }
 
     render() {
-        console.log(this.props.user);
+        // console.log(this.props.user);
         return (
             <div className="container">
                 <p>Home</p>
                 <Link to="/profile">Profileへ</Link>
                 <br />
+                <p>{this.props.user.email}</p>
                 <br />
                 <Button onClick={this.handleLogout}>ログアウト</Button>
             </div>

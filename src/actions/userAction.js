@@ -2,6 +2,7 @@ import firebase, { db } from '../Firebase';
 
 export const UPDATE_EMAIL = 'UPDATE_EMAIL';
 export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
+export const UPDATE_TEL = 'UPDATE_TEL';
 export const SIGNIN = 'SIGNIN';
 export const SIGNUP = 'SIGNUP';
 
@@ -19,12 +20,20 @@ export const updatePassword = password => {
     }
 }
 
+export const updateTel = tel => {
+    return {
+        type: UPDATE_TEL,
+        payload: tel,
+    }
+}
+
+
 export const signIn = () => {
     return async (dispatch, getState) => {
         try {
             const { email, password } = getState().user;
             const response = await firebase.auth().signInWithEmailAndPassword(email, password);
-            dispatch(getUser(resonse.user.uid));
+            dispatch(getUser(response.user.uid));
         } catch (e) {
             alert(e);
         }

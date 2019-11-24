@@ -3,6 +3,10 @@ import { Redirect } from 'react-router-dom';
 import firebase from './Firebase';
 import LoadingOverlay from 'react-loading-overlay';
 
+//redux
+import { connect } from 'react-redux';
+import { getUser, updateEmail } from './actions/userAction';
+
 class Auth extends React.Component {
 
     state = {
@@ -20,6 +24,11 @@ class Auth extends React.Component {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 //してる
+
+                //ユーザー情報取得
+                this.props.getUser(user.uid);
+
+                //フラグ更新
                 if (this._isMounted) {
                     this.setState({
                         signinCheck: true,
@@ -30,10 +39,11 @@ class Auth extends React.Component {
                 user.getIdTokenResult(true).then(idTokenResult => {
                     if (idTokenResult.claims.admin) {
                         console.log("admin");
-                    }else{
+                    } else {
                         console.log("user");
                     }
                 });
+
             } else {
                 //してない
                 if (this._isMounted) {
@@ -52,7 +62,7 @@ class Auth extends React.Component {
 
     render() {
         //チェックが終わってないなら（ローディング表示）
-        if (!this.state.signinCheck) {
+        if (!this.state.signinCheck || this.props.user.email === '') {
             return (
                 <LoadingOverlay
                     active={true}
@@ -75,4 +85,17 @@ class Auth extends React.Component {
     }
 }
 
-export default Auth;
+const mapStateToProps = state => (
+    {
+        user: state.user,
+    }
+);
+
+const mapDispatchToProps = dispatch => (
+    {
+        getUser: uid => dispatch(getUser(uid)),
+        updateEmail: email => dispatch(updateEmail(email)),
+    }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

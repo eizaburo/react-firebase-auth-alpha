@@ -8,10 +8,13 @@ import App from './App';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import userReducer from './reducers/userReducer';
+import thunk from 'redux-thunk';
 
 const store = createStore(combineReducers({
     user: userReducer,
-}), applyMiddleware());
+}), applyMiddleware(
+    thunk,
+));
 
 ReactDOM.render
     (

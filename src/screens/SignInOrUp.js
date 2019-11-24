@@ -5,6 +5,10 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import firebase from '../Firebase';
 
+//redux
+import { connect } from 'react-redux';
+import { updateEmail, updatePassword, signIn } from '../actions/userAction';
+
 class SignInOrUp extends React.Component {
 
     state = {
@@ -13,21 +17,36 @@ class SignInOrUp extends React.Component {
 
     _isMounted = false;
 
-    handleOnSubmit = (values) => {
+    handleOnSubmit = async (values) => {
         //spinner表示開始
         if (this._isMounted) this.setState({ loading: true })
+
+        //サインイン(redux-thunk)
+        const { email, password } = values;
+        this.props.updateEmail(email);
+        this.props.updatePassword(password);
+
+        try {
+            await this.props.signIn();
+            if (this._isMounted) this.setState({ loading: false })
+            this.props.history.push("/");
+        } catch (e) {
+            if (this._isMounted) this.setState({ loading: false })
+            alert(e);
+        }
+
         //サインイン（ログイン）処理
-        firebase.auth().signInWithEmailAndPassword(values.email, values.password)
-            .then(res => {
-                //正常終了時
-                this.props.history.push("/");
-                if (this._isMounted) this.setState({ loading: false });
-            })
-            .catch(error => {
-                //異常終了時
-                if (this._isMounted) this.setState({ loading: false });
-                alert(error);
-            });
+        // firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+        //     .then(res => {
+        //         //正常終了時
+        //         this.props.history.push("/");
+        //         if (this._isMounted) this.setState({ loading: false });
+        //     })
+        //     .catch(error => {
+        //         //異常終了時
+        //         if (this._isMounted) this.setState({ loading: false });
+        //         alert(error);
+        //     });
 
     }
 
@@ -104,4 +123,19 @@ class SignInOrUp extends React.Component {
     }
 }
 
-export default withRouter(SignInOrUp);
+const mapStateToProps = state => (
+    {
+        user: state.user,
+    }
+);
+
+const mapDispatchToProps = dispatch => (
+    {
+        updateEmail: email => dispatch(updateEmail(email)),
+        updatePassword: password => dispatch(updatePassword(password)),
+        signIn: () => dispatch(signIn()),
+    }
+);
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SignInOrUp));
