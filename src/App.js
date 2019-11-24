@@ -9,6 +9,7 @@ import Profile from './screens/Profile';
 import SignInOrUp from './screens/SignInOrUp';
 import SignUp from './screens/SignUp';
 
+//Auth
 import Auth from './Auth';
 
 class App extends React.Component {

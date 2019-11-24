@@ -3,6 +3,9 @@ import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
+//redux
+import { connect } from 'react-redux';
+
 class Home extends React.Component {
 
     handleLogout = () => {
@@ -10,6 +13,7 @@ class Home extends React.Component {
     }
 
     render() {
+        console.log(this.props.user);
         return (
             <div className="container">
                 <p>Home</p>
@@ -22,4 +26,16 @@ class Home extends React.Component {
     }
 }
 
-export default Home;
+const mapStateToProps = state => (
+    {
+        user: state.user,
+    }
+);
+
+const mapDispatchToProps = dispatch => (
+    {
+
+    }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
